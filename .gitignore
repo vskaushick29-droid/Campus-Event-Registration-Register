@@ -1,0 +1,27 @@
+# Compiled Executables and Objects
+*.exe
+*.o
+*.obj
+*.dll
+*.so
+*.dylib
+
+# Dev-C++ / Code::Blocks / IDE Project Artifacts
+*.layout
+*.depend
+*.win
+.vscode/
+.idea/
+
+# Runtime Database & Generated Reports
+data/participants.txt
+data/event_summary.txt
+
+# Keep data directory structure intact in git
+!data/.gitkeep
+!data/participants.txt.example
+
+# Temporary and Log files
+*.log
+*.tmp
+*.bak
