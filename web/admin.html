@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard • Campus Event Registration Register</title>
+    <link rel="stylesheet" href="/css/admin.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Top Navigation Header -->
+    <header class="admin-header">
+        <div class="nav-container">
+            <div class="brand">
+                <span class="brand-badge">ADMIN</span>
+                <span class="brand-title">Campus Event Management Portal</span>
+            </div>
+            <div id="userProfile" class="user-profile hidden">
+                <span class="user-status">&#9679; Connected to C Backend</span>
+                <span class="user-name">Administrator</span>
+                <button type="button" id="logoutBtn" class="btn-logout" title="Sign out of Admin Panel">Sign Out</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="admin-main">
+        <!-- Notification Banner -->
+        <div id="adminAlert" class="alert hidden" role="alert">
+            <span id="alertIcon" class="alert-icon"></span>
+            <span id="alertMessage" class="alert-message"></span>
+            <button type="button" id="closeAlertBtn" class="alert-close">&times;</button>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- 1. ADMIN LOGIN VIEW                        -->
+        <!-- ========================================== -->
+        <section id="loginSection" class="login-wrapper">
+            <div class="login-card">
+                <div class="login-header">
+                    <div class="lock-icon">&#128272;</div>
+                    <h2>Administrative Access</h2>
+                    <p>Enter your authorized credentials to manage campus event registrations.</p>
+                </div>
+
+                <form id="loginForm" novalidate>
+                    <div class="form-group">
+                        <label for="adminUsername">Admin Username</label>
+                        <input 
+                            type="text" 
+                            id="adminUsername" 
+                            placeholder="Enter username" 
+                            required 
+                            autocomplete="username"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="adminPassword">Password</label>
+                        <input 
+                            type="password" 
+                            id="adminPassword" 
+                            placeholder="Enter password" 
+                            required 
+                            autocomplete="current-password"
+                        >
+                    </div>
+
+                    <div class="login-hint">
+                        <span>&#9432; Default Viva Demo Credentials: <strong>admin</strong> / <strong>admin123</strong></span>
+                    </div>
+
+                    <button type="submit" id="loginBtn" class="btn btn-primary btn-block">
+                        <span class="btn-text">Authenticate & Open Dashboard</span>
+                        <span class="btn-spinner hidden" aria-hidden="true"></span>
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- 2. ADMIN DASHBOARD VIEW (Protected)        -->
+        <!-- ========================================== -->
+        <section id="dashboardSection" class="dashboard-wrapper hidden">
+            
+            <!-- Key Metric Overview Cards -->
+            <div class="metrics-grid">
+                <div class="metric-card primary">
+                    <div class="metric-header">
+                        <span class="metric-label">Total Registrations</span>
+                        <span class="metric-icon">&#128101;</span>
+                    </div>
+                    <div class="metric-value" id="statTotal">0</div>
+                    <div class="metric-subtext">Active records in C array storage</div>
+                </div>
+
+                <div class="metric-card success">
+                    <div class="metric-header">
+                        <span class="metric-label">Remaining Capacity</span>
+                        <span class="metric-icon">&#127915;</span>
+                    </div>
+                    <div class="metric-value" id="statRemaining">500</div>
+                    <div class="metric-subtext">Out of maximum 500 limit</div>
+                </div>
+
+                <div class="metric-card info">
+                    <div class="metric-header">
+                        <span class="metric-label">Events Offered</span>
+                        <span class="metric-icon">&#127942;</span>
+                    </div>
+                    <div class="metric-value">5</div>
+                    <div class="metric-subtext">Technical competitions</div>
+                </div>
+
+                <div class="metric-card warning">
+                    <div class="metric-header">
+                        <span class="metric-label">System Storage Engine</span>
+                        <span class="metric-icon">&#128451;</span>
+                    </div>
+                    <div class="metric-value-sm mono">participants.txt</div>
+                    <div class="metric-subtext">Direct C File I/O Delimited</div>
+                </div>
+            </div>
+
+            <!-- Event-wise Breakdown Cards Grid -->
+            <div class="section-heading">
+                <h3>Event-Wise Distribution & Statistics</h3>
+                <span class="badge-tag">Calculated in Pure C</span>
+            </div>
+
+            <div id="eventsGrid" class="events-stats-grid">
+                <!-- Dynamically populated event cards from GET /api/admin/stats -->
+            </div>
+
+            <!-- Participant Table & Controls Section -->
+            <div class="table-container-card">
+                <div class="table-toolbar">
+                    <div class="search-filters">
+                        <!-- Search Box (Linear search by ID or Name) -->
+                        <div class="search-box">
+                            <span class="search-icon">&#128269;</span>
+                            <input 
+                                type="text" 
+                                id="searchInput" 
+                                placeholder="Search by Confirmation No, Reg ID, Name, or Dept..." 
+                                autocomplete="off"
+                            >
+                            <button type="button" id="clearSearchBtn" class="clear-search-btn hidden">&times;</button>
+                        </div>
+
+                        <!-- Event Filter Dropdown -->
+                        <div class="filter-box">
+                            <select id="eventFilter">
+                                <option value="-1">All Events (No Filter)</option>
+                                <option value="0">Paper Presentation (PP01)</option>
+                                <option value="1">Coding Competition (CC02)</option>
+                                <option value="2">Project Expo (PE03)</option>
+                                <option value="3">Quiz Competition (QC04)</option>
+                                <option value="4">Technical Debate (TD05)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="action-buttons">
+                        <button type="button" id="refreshBtn" class="btn btn-secondary" title="Reload records from C server">
+                            &#8635; Refresh
+                        </button>
+                        <button type="button" id="generateSummaryBtn" class="btn btn-success" title="Generate data/event_summary.txt">
+                            &#9881; Generate Summary
+                        </button>
+                        <button type="button" id="viewSummaryBtn" class="btn btn-primary" title="View formatted report">
+                            &#128196; View Report
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Table Header Metadata -->
+                <div class="table-info-bar">
+                    <div class="count-display">
+                        Showing <strong id="displayedCount">0</strong> of <strong id="totalRegisteredCount">0</strong> registered participants
+                    </div>
+                    <div class="algo-note">
+                        Algorithm: <em>Linear Search &amp; Filter via C Pointers</em>
+                    </div>
+                </div>
+
+                <!-- Participants Data Table -->
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 50px;">#</th>
+                                <th>Confirmation No</th>
+                                <th>Registration ID</th>
+                                <th>Participant Name</th>
+                                <th>Department</th>
+                                <th>Registered Event</th>
+                                <th>Event Code</th>
+                                <th>Registration Time</th>
+                            </tr>
+                        </thead>
+                        <tbody id="participantsTableBody">
+                            <!-- Populated dynamically from GET /api/admin/participants -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Empty State Message -->
+                <div id="emptyTableState" class="empty-state hidden">
+                    <div class="empty-icon">&#128269;</div>
+                    <h4>No Matching Participants Found</h4>
+                    <p>Try modifying your search query or selecting a different event filter.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- 3. EVENT SUMMARY REPORT MODAL              -->
+        <!-- ========================================== -->
+        <div id="summaryModal" class="modal-overlay hidden" role="dialog" aria-modal="true">
+            <div class="modal-box">
+                <div class="modal-header">
+                    <div class="modal-title-group">
+                        <span class="file-tag">data/event_summary.txt</span>
+                        <h3>Official Event Summary Report</h3>
+                    </div>
+                    <button type="button" id="closeModalBtn" class="modal-close">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="report-meta">
+                        <span>Generated by C Backend Service Engine</span>
+                        <span id="reportStatusBadge" class="badge-success">&#10003; Formatted ASCII Report</span>
+                    </div>
+                    <pre id="summaryReportContent" class="report-pre">Loading report from C server...</pre>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="copyReportBtn" class="btn btn-secondary">Copy to Clipboard</button>
+                    <button type="button" id="closeModalFooterBtn" class="btn btn-primary">Close Viewer</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="admin-footer">
+        <p>Campus Event Registration Register • Pure C Winsock HTTP Engine • Capstone Project</p>
+        <p class="sub-footer">SIMATS Engineering • Department of Computer Science & Engineering</p>
+    </footer>
+
+    <script src="/js/admin.js"></script>
+</body>
+</html>

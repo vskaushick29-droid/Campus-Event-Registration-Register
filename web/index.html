@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campus Event Registration Register</title>
+    <link rel="stylesheet" href="/css/student.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="site-header">
+        <div class="header-content">
+            <div class="header-badge">SIMATS Engineering • Technical Symposium</div>
+            <h1>Campus Event Registration Portal</h1>
+            <p class="header-subtitle">Register for Inter-College Technical Competitions & Presentations</p>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Guidelines Banner -->
+        <section class="info-card">
+            <div class="info-icon">&#9432;</div>
+            <div class="info-text">
+                <strong>Registration Guidelines:</strong> Students must use their official college Registration ID allotted by the college. You can use the same Registration ID to register for multiple events, but you can register for each event only once. Each successful event registration will receive a unique Confirmation Number.
+            </div>
+        </section>
+
+        <!-- Dynamic Notification Alert -->
+        <div id="alertBox" class="alert hidden" role="alert" aria-live="polite">
+            <span id="alertIcon" class="alert-icon"></span>
+            <span id="alertMessage" class="alert-message"></span>
+        </div>
+
+        <!-- Registration Form Card -->
+        <section id="formSection" class="card">
+            <div class="card-header">
+                <h2>Student Registration Form</h2>
+                <p>Fill in your details below to secure your event participation entry.</p>
+            </div>
+
+            <form id="registrationForm" novalidate>
+                <div class="form-group">
+                    <label for="regId">Registration ID / Roll No <span class="required">*</span></label>
+                    <input 
+                        type="text" 
+                        id="regId" 
+                        name="reg_id" 
+                        placeholder="e.g. REG2026101 or 2026CS042" 
+                        maxlength="30" 
+                        required 
+                        autocomplete="off"
+                        spellcheck="false"
+                    >
+                    <span class="field-hint">Alphanumeric ID between 3 and 30 characters (letters, numbers, hyphens).</span>
+                    <span id="regIdError" class="field-error"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="fullName">Full Name <span class="required">*</span></label>
+                    <input 
+                        type="text" 
+                        id="fullName" 
+                        name="name" 
+                        placeholder="e.g. Arun Kumar S" 
+                        maxlength="75" 
+                        required 
+                        autocomplete="name"
+                    >
+                    <span class="field-hint">Your full name as per college ID (letters, spaces, and dots only).</span>
+                    <span id="nameError" class="field-error"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="department">Department <span class="required">*</span></label>
+                    <input 
+                        type="text" 
+                        id="department" 
+                        name="department" 
+                        list="deptOptions" 
+                        placeholder="Select or enter your department" 
+                        maxlength="75" 
+                        required
+                    >
+                    <datalist id="deptOptions">
+                        <option value="Computer Science and Engineering">
+                        <option value="Information Technology">
+                        <option value="Electronics and Communication Engineering">
+                        <option value="Electrical and Electronics Engineering">
+                        <option value="Mechanical Engineering">
+                        <option value="Civil Engineering">
+                        <option value="Biomedical Engineering">
+                        <option value="Artificial Intelligence and Data Science">
+                    </datalist>
+                    <span class="field-hint">Choose from recommendations or type your department.</span>
+                    <span id="deptError" class="field-error"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="eventId">Select Event <span class="required">*</span></label>
+                    <div class="select-wrapper">
+                        <select id="eventId" name="event_id" required>
+                            <option value="" disabled selected>-- Loading available events from C backend... --</option>
+                        </select>
+                    </div>
+                    <span class="field-hint">Select one of the 5 official campus competition events.</span>
+                    <span id="eventError" class="field-error"></span>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" id="submitBtn" class="btn btn-primary">
+                        <span class="btn-text">Register for Event</span>
+                        <span class="btn-spinner hidden" aria-hidden="true"></span>
+                    </button>
+                    <button type="button" id="resetBtn" class="btn btn-secondary">Clear Form</button>
+                </div>
+            </form>
+        </section>
+
+        <!-- Registration Confirmation Receipt Card (Hidden initially) -->
+        <section id="confirmationCard" class="card confirmation-card hidden">
+            <div class="success-badge">
+                <div class="success-check">&#10003;</div>
+                <h2>Registration Confirmed!</h2>
+                <p>Your event registration has been verified and permanently recorded in the C database.</p>
+            </div>
+
+            <!-- Prominent Confirmation Number Box -->
+            <div class="confirmation-highlight-box">
+                <span class="confirmation-badge-title">OFFICIAL PROOF OF REGISTRATION</span>
+                <div class="confirmation-number-label">Confirmation Number</div>
+                <div class="confirmation-number-row">
+                    <div id="confirmConfirmationNo" class="confirmation-number-display">-</div>
+                    <button type="button" id="copyCnfBtn" class="btn-copy-cnf" title="Copy confirmation number">
+                        <span id="copyCnfIcon">&#128203;</span> <span id="copyCnfText">Copy</span>
+                    </button>
+                </div>
+                <div class="confirmation-badge-sub">Please save this unique confirmation number for event check-in</div>
+            </div>
+
+            <div class="receipt-box">
+                <div class="receipt-header">
+                    <span class="receipt-title">Official Participant Pass</span>
+                    <span class="receipt-status verified">&#9679; VERIFIED ENTRY</span>
+                </div>
+
+                <div class="receipt-grid">
+                    <div class="receipt-item">
+                        <span class="receipt-label">Confirmation Number</span>
+                        <span id="confirmPassNumber" class="receipt-value mono highlight">-</span>
+                    </div>
+                    <div class="receipt-item">
+                        <span class="receipt-label">College Registration ID</span>
+                        <span id="confirmRegId" class="receipt-value mono">-</span>
+                    </div>
+                    <div class="receipt-item">
+                        <span class="receipt-label">Participant Name</span>
+                        <span id="confirmName" class="receipt-value">-</span>
+                    </div>
+                    <div class="receipt-item">
+                        <span class="receipt-label">Department</span>
+                        <span id="confirmDept" class="receipt-value">-</span>
+                    </div>
+                    <div class="receipt-item">
+                        <span class="receipt-label">Registered Event</span>
+                        <span id="confirmEvent" class="receipt-value highlight">-</span>
+                    </div>
+                    <div class="receipt-item">
+                        <span class="receipt-label">Event Code</span>
+                        <span id="confirmEventCode" class="receipt-value mono">-</span>
+                    </div>
+                    <div class="receipt-item" style="grid-column: span 2;">
+                        <span class="receipt-label">Registration Timestamp</span>
+                        <span id="confirmTimestamp" class="receipt-value mono">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="confirmation-actions">
+                <button type="button" id="registerAnotherBtn" class="btn btn-primary">
+                    Register for Another Event
+                </button>
+                <button type="button" onclick="window.print()" class="btn btn-secondary">
+                    &#128438; Print / Save Confirmation
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <p>Campus Event Registration Register • Core Backend Engine Powered by Pure C</p>
+        <p class="sub-footer">Department of Computer Science & Engineering • Capstone Project</p>
+    </footer>
+
+    <script src="/js/student.js"></script>
+</body>
+</html>
