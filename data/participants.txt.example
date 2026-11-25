@@ -1,0 +1,4 @@
+# Campus Event Registration Register - Participant Database
+# Format: CONFIRMATION_NO|REG_ID|NAME|DEPARTMENT|EVENT_ID|REGISTERED_AT
+# Example:
+# CNF2026-1001|REG2026101|Student Name|Computer Science and Engineering|1|2026-11-25 08:00:00
